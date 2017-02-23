@@ -25,19 +25,15 @@ run(1, 2, 2) - печатает "1, 2\n"
 
 sub run {
     my ($x, $y, $z) = @_;
-    my $min = undef;
-    my $max = undef;
+    my $min = $x;
+    my $max = $x;
 
-    if($x > $y) {
-		if($y > $z) { $max = $x; $min = $z;}
-		elsif($z > $x) { $max = $z; $min = $y;}
-		else { $max = $x; $min = $y;}				
-	}
-	else {
-		if($x > $z) { $max = $y; $min = $z;}
-		elsif($z > $y) { $max = $z; $min = $x;}
-		else{ $max = $y; $min = $x;}
-	}
+    if($y > $x) { $max = $y; }	
+	if($z > $max) { $max = $z; }	
+
+
+	if($y < $x) { $min = $y; }
+	if($z < $min) { $min = $z; }	
 
     print "$min, $max\n";
 }
