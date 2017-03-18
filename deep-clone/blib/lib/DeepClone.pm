@@ -31,11 +31,57 @@ use warnings;
 * ссылка на массив
 * ссылка на хеш
 Элементами ссылок на массив или хеш, не могут быть ссылки на массивы и хеши исходной структуры данных.
+<<<<<<< HEAD
+=======
 
+>>>>>>> e6514de44445e7b207b336c9b7b590024b631c21
 =cut
 
 sub clone{
 	my $orig = shift;
+<<<<<<< HEAD
+	my $refs = shift;
+	my $cloned;
+	
+	unless(defined $refs){
+		$refs = { "undef" => 0};		
+	}
+
+	#if( (ref $orig eq "ARRAY" || ref $orig eq "HASH") && !exists $ref{$orig} )
+
+	if(ref $orig eq "ARRAY"){
+		unless(exists $refs->{$orig}){
+			if( ref $orig eq "ARRAY" || ref $orig eq "HASH"){
+				$refs->{$orig} = \$cloned; #запоминаем, чтобы использовать ссылку, а не создавать новую копию
+			}
+			for my $i(0..((scalar @$orig)-1)){
+				if( (ref $orig->[$i] eq "ARRAY" || ref $orig->[$i] eq "HASH") && exists $refs->{ $orig->[$i] } ){
+					$cloned->[$i] = ${$refs->{ $orig->[$i] }};
+				}else{
+					$cloned->[$i] = clone($orig->[$i],  $refs);
+				}
+			}
+		}else{
+			$cloned = ${ $refs->{$orig}};
+		}
+		
+	}elsif(ref $orig eq "HASH"){ #аналогично массивам
+		unless(exists $refs->{$orig}){
+			if( ref $orig eq "ARRAY" || ref $orig eq "HASH"){
+				$refs->{$orig} = \$cloned; #ccылка на ссылку, т.к. на в первый раз undef
+			}
+			while( my ($k, $v) = each %$orig){
+				if( ( ref $v eq "HASH" || ref $v eq "HASH" ) && exists $refs->{ $v } ){
+					$cloned->{$k} = ${$refs->{ $v }};
+				}else{
+					$cloned->{$k} = clone($orig->{$k}, $refs);			
+				}
+			}
+		}else{
+			$cloned = ${ $refs->{$orig}};
+		}
+		
+=======
 	my $cloned;
 
 	if(ref $orig eq "ARRAY"){
@@ -46,13 +92,23 @@ sub clone{
 		while( my ($k, $v) = each %$orig){
 			$cloned->{$k} = clone($orig->{$k});			
 		}
+>>>>>>> e6514de44445e7b207b336c9b7b590024b631c21
 	}elsif(ref $orig eq ""){
 		$cloned = $orig;
 	}else{
 		$cloned = undef;
+<<<<<<< HEAD
+		$refs->{"undef"} = 1;
+	}
+	return undef if($refs->{"undef"} == 1);
+	return $cloned;
+}
+
+=======
 	}
 	return $cloned;
 }
 
 
+>>>>>>> e6514de44445e7b207b336c9b7b590024b631c21
 1;

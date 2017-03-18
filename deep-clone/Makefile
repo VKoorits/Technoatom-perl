@@ -1,4 +1,4 @@
-# This Makefile is for the Anagram extension to perl.
+# This Makefile is for the DeepClone extension to perl.
 #
 # It was generated automatically by MakeMaker version
 # 7.0401 (Revision: 70401) from the contents of
@@ -13,10 +13,10 @@
 
 #     BUILD_REQUIRES => {  }
 #     CONFIGURE_REQUIRES => {  }
-#     NAME => q[Anagram]
+#     NAME => q[DeepClone]
 #     PREREQ_PM => {  }
 #     TEST_REQUIRES => {  }
-#     VERSION_FROM => q[bin/anagram]
+#     VERSION_FROM => q[bin/clone]
 
 # --- MakeMaker post_initialize section:
 
@@ -53,8 +53,8 @@ VENDORLIBEXP = /usr/share/perl5
 AR_STATIC_ARGS = cr
 DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
-NAME = Anagram
-NAME_SYM = Anagram
+NAME = DeepClone
+NAME_SYM = DeepClone
 VERSION = 1
 VERSION_MACRO = VERSION
 VERSION_SYM = 1
@@ -145,11 +145,11 @@ MM_REVISION = 70401
 # PARENT_NAME = NAME without BASEEXT and no trailing :: (eg Foo::Bar)
 # DLBASE  = Basename part of dynamic library. May be just equal BASEEXT.
 MAKE = make
-FULLEXT = Anagram
-BASEEXT = Anagram
+FULLEXT = DeepClone
+BASEEXT = DeepClone
 PARENT_NAME = 
 DLBASE = $(BASEEXT)
-VERSION_FROM = bin/anagram
+VERSION_FROM = bin/clone
 OBJECT = 
 LDFROM = $(OBJECT)
 LINKTYPE = dynamic
@@ -161,7 +161,7 @@ C_FILES  =
 O_FILES  = 
 H_FILES  = 
 MAN1PODS = 
-MAN3PODS = lib/Anagram.pm
+MAN3PODS = lib/DeepClone.pm
 
 # Where is the Config information that we are using/depend on
 CONFIGDEP = $(PERL_ARCHLIBDEP)$(DFSEP)Config.pm $(PERL_INCDEP)$(DFSEP)config.h
@@ -184,10 +184,13 @@ PERL_ARCHIVEDEP    =
 PERL_ARCHIVE_AFTER = 
 
 
-TO_INST_PM = lib/Anagram.pm
+TO_INST_PM = lib/DeepClone.pm \
+	pl.pl
 
-PM_TO_BLIB = lib/Anagram.pm \
-	blib/lib/Anagram.pm
+PM_TO_BLIB = lib/DeepClone.pm \
+	blib/lib/DeepClone.pm \
+	pl.pl \
+	$(INST_LIB)/pl.pl
 
 
 # --- MakeMaker platform_constants section:
@@ -256,8 +259,8 @@ CI = ci -u
 RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
-DISTNAME = Anagram
-DISTVNAME = Anagram-1
+DISTNAME = DeepClone
+DISTVNAME = DeepClone-1
 
 
 # --- MakeMaker macro section:
@@ -411,9 +414,9 @@ POD2MAN = $(POD2MAN_EXE)
 
 
 manifypods : pure_all  \
-	lib/Anagram.pm
+	lib/DeepClone.pm
 	$(NOECHO) $(POD2MAN) --section=$(MAN3EXT) --perm_rw=$(PERM_RW) -u \
-	  lib/Anagram.pm $(INST_MAN3DIR)/Anagram.$(MAN3EXT) 
+	  lib/DeepClone.pm $(INST_MAN3DIR)/DeepClone.$(MAN3EXT) 
 
 
 
@@ -471,11 +474,7 @@ realclean_subdirs :
 # Delete temporary files (via clean) and also delete dist files
 realclean purge ::  clean realclean_subdirs
 	- $(RM_F) \
-<<<<<<< HEAD
-	  $(MAKEFILE_OLD) $(FIRST_MAKEFILE) 
-=======
 	  $(FIRST_MAKEFILE) $(MAKEFILE_OLD) 
->>>>>>> e6514de44445e7b207b336c9b7b590024b631c21
 	- $(RM_RF) \
 	  $(DISTVNAME) 
 
@@ -497,7 +496,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) 'meta-spec:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  url: http://module-build.sourceforge.net/META-spec-v1.4.html' >> META_new.yml
 	$(NOECHO) $(ECHO) '  version: '\''1.4'\''' >> META_new.yml
-	$(NOECHO) $(ECHO) 'name: Anagram' >> META_new.yml
+	$(NOECHO) $(ECHO) 'name: DeepClone' >> META_new.yml
 	$(NOECHO) $(ECHO) 'no_index:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  directory:' >> META_new.yml
 	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
@@ -520,7 +519,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",' >> META_new.json
 	$(NOECHO) $(ECHO) '      "version" : "2"' >> META_new.json
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
-	$(NOECHO) $(ECHO) '   "name" : "Anagram",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "name" : "DeepClone",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "no_index" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '      "directory" : [' >> META_new.json
 	$(NOECHO) $(ECHO) '         "t",' >> META_new.json
@@ -834,7 +833,8 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
-	  lib/Anagram.pm blib/lib/Anagram.pm 
+	  lib/DeepClone.pm blib/lib/DeepClone.pm \
+	  pl.pl $(INST_LIB)/pl.pl 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

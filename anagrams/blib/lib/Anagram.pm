@@ -1,5 +1,12 @@
 package Anagram;
 
+<<<<<<< HEAD
+use 5.010;
+use strict;
+use warnings;
+use locale;
+use Encode;
+=======
 
 use strict;
 use warnings;
@@ -9,6 +16,7 @@ use Encode;
 use Data::Dumper;
 
 
+>>>>>>> e6514de44445e7b207b336c9b7b590024b631c21
 
 =encoding UTF8
 
@@ -45,7 +53,10 @@ anagram(['пятак', 'ЛиСток', 'пятка', 'стул', 'ПяТаК', '
 
 =cut
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> e6514de44445e7b207b336c9b7b590024b631c21
 sub anagram {
     my $words_list = shift;
     my %result;
