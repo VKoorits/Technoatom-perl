@@ -38,6 +38,7 @@ sub clone{
 	my $orig = shift;
 	my $refs = shift;
 	$refs //= { "undef" => 0};		
+	return undef if($refs->{"undef"} == 1);
 
 	my $cloned;	
 	
@@ -54,7 +55,6 @@ sub clone{
 		}else{
 			$cloned = $refs->{$orig};
 		}
-		
 	}elsif(ref $orig eq "HASH"){ #аналогично массивам
 		unless(exists $refs->{$orig}){
 			if( ref $orig eq "ARRAY" || ref $orig eq "HASH"){
@@ -67,13 +67,15 @@ sub clone{
 		}else{
 			$cloned = $refs->{$orig};
 		}
-		
+		return undef if($refs->{"undef"} == 1);
 	}elsif(ref $orig eq ""){
 		$cloned = $orig;
+		return undef if($refs->{"undef"} == 1);
 	}else{
 		$cloned = undef;
 		$refs->{"undef"} = 1;
 	}
+
 	return undef if($refs->{"undef"} == 1);
 	return $cloned;
 }

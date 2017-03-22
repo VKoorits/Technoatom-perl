@@ -28,13 +28,13 @@ sub parse_file {
 		my $copy = $log_line;
 		$copy =~ m{
 				^(?<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})
-				\s\[03/Mar/2017:(?<minute>\d{2}:\d{2}):\d{2}\s\+0300\]\s
+				\s\[\d{2}/\w{3}/\d{4}:(?<minute>\d{2}:\d{2}):\d{2}\s\+\d{4}\]\s
 				".+?"\s
 				(?<status>\d+)\s
 				(?<size>\d+)\s
 				["-"\s]?
 				".+"\s
-				"(?:(?<compress>.+)")$
+				"(?<compress>.+)"$
 		}x;
 		
 		
@@ -44,14 +44,14 @@ sub parse_file {
 		
 
 		$data{$1}{count}+=1;
-		$data{$1}{statuses}{$+{status}} += $+{size}/1024;
+		$data{$1}{statuses}{$+{status}} += $+{size};
 		$status{$+{status}}=1;
 
 		if($+{status} eq "200"){
 			if($+{compress} eq "-"){
-				$data{$1}{data} += $+{size}/1024;
+				$data{$1}{data} += $+{size};
 			}else{
-				$data{$1}{data} += int($+{size}*$+{compress}) / 1024;
+				$data{$1}{data} += int($+{size}*$+{compress});
 			}
 		}
 		$data{$1}{all_minutes}{$+{minute}} = 1;#отмечаем все минуты, в которые были запросы
@@ -69,7 +69,7 @@ sub parse_file {
 		if($k ne "total") {
 			
 			$data{total}{count} += $v->{count};
-			$data{total}{data} += 10*$v->{data}/10;
+			$data{total}{data} += $v->{data};
 			for my $status(@index){
 				if(exists $v->{statuses}{$status}){
 					$data{total}{statuses}{$status} += $v->{statuses}{$status};
@@ -83,7 +83,7 @@ sub parse_file {
 	my @arr_data = (sort{ $data{$b}{count} <=> $data{$a}{count} }keys %data)[0..10];#total + 10 ip с максимальной активностью
 	$result->{status} = \@index;
 	$result->{sorted_ip} = \@arr_data;
-	for my $ip(@arr_data[0..10]){
+	for my $ip(@arr_data){
 		$data{$ip}{count_minuts} = scalar keys %{ $data{$ip}{all_minutes} } if($ip ne "total");
 		delete $data{$ip}{all_minutes};
 		$data{$ip}{avg} = 
@@ -104,10 +104,10 @@ sub report {
 	print "\n";
 #////////////////////////
 	for my $ip(@{ $result->{sorted_ip} }){
-		print $ip."\t".$result->{$ip}{count}."\t".sprintf("%.2f", $result->{$ip}{count}/$result->{$ip}{count_minuts})."\t".int($result->{$ip}{data});
+		print $ip."\t".$result->{$ip}{count}."\t".sprintf("%.2f", $result->{$ip}{count}/$result->{$ip}{count_minuts})."\t".int($result->{$ip}{data} / 1024);
 		for my $status(@{$result->{status}}){
 			if(exists $result->{$ip}{statuses}{$status}){
-				print "\t".int($result->{$ip}{statuses}{$status});
+				print "\t".int($result->{$ip}{statuses}{$status} / 1024);
 			 }else{ print "\t0"; }
 		}	
 
