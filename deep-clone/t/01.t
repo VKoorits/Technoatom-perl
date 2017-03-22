@@ -42,6 +42,7 @@ sub test_deep {
         $TESTS_CNT++;
 
         my $ok = eq_deeply($cloned, $orig);
+		
         if($ok) {
             pass($test_name.' - data schemas eq');
 
@@ -58,9 +59,6 @@ sub test_deep {
                 pass($test_name.' - data stuctures independ');
             }
         } else {
-			print Dumper($cloned);
-			print Dumper($orig);
-			print"=======================\n";
             fail($test_name.' - data schemas eq\n'.Dumper($cloned).Dumper($orig));
         }
     }

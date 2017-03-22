@@ -37,42 +37,35 @@ use warnings;
 sub clone{
 	my $orig = shift;
 	my $refs = shift;
-	my $cloned;
+	$refs //= { "undef" => 0};		
+
+	my $cloned;	
 	
-	unless(defined $refs){
-		$refs = { "undef" => 0};		
-	}
 
 	if(ref $orig eq "ARRAY"){
 		unless(exists $refs->{$orig}){
 			if( ref $orig eq "ARRAY" || ref $orig eq "HASH"){
-				$refs->{$orig} = \$cloned; #запоминаем, чтобы использовать ссылку, а не создавать новую копию
+				$cloned = [];#иначе запишется undef
+				$refs->{$orig} = $cloned; #запоминаем, чтобы использовать ссылку, а не создавать новую копию
 			}
-			for my $i(0..((scalar @$orig)-1)){
-				if( (ref $orig->[$i] eq "ARRAY" || ref $orig->[$i] eq "HASH") && exists $refs->{ $orig->[$i] } ){
-					$cloned->[$i] = ${$refs->{ $orig->[$i] }};
-				}else{
-					$cloned->[$i] = clone($orig->[$i],  $refs);
-				}
+			for my $v(@$orig){
+					push @$cloned, clone($v,  $refs);
 			}
 		}else{
-			$cloned = ${ $refs->{$orig}};
+			$cloned = $refs->{$orig};
 		}
 		
 	}elsif(ref $orig eq "HASH"){ #аналогично массивам
 		unless(exists $refs->{$orig}){
 			if( ref $orig eq "ARRAY" || ref $orig eq "HASH"){
-				$refs->{$orig} = \$cloned; #ccылка на ссылку, т.к. на в первый раз undef
+				$cloned = {};
+				$refs->{$orig} = $cloned;
 			}
-			while( my ($k, $v) = each %$orig){
-				if( ( ref $v eq "HASH" || ref $v eq "HASH" ) && exists $refs->{ $v } ){
-					$cloned->{$k} = ${$refs->{ $v }};
-				}else{
-					$cloned->{$k} = clone($orig->{$k}, $refs);			
-				}
+			while( my ($k, $v) = each %$orig){				
+					$cloned->{$k} = clone($v, $refs);		
 			}
 		}else{
-			$cloned = ${ $refs->{$orig}};
+			$cloned = $refs->{$orig};
 		}
 		
 	}elsif(ref $orig eq ""){
