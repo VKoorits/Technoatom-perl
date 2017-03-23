@@ -7,7 +7,7 @@ our $VERSION = 1.0;
 
 
 my $filepath = $ARGV[0];
-die "USAGE:\n$0 <log-file.bz2>\n"  unless $filepath;
+#die "USAGE:\n$0 <log-file.bz2>\n"  unless $filepath;
 die "File '$filepath' not found\n" unless -f $filepath;
 
 my $parsed_data = parse_file($filepath);
