@@ -15,7 +15,7 @@ sub import() {
 
 
 	
-sub _parse_arr{
+sub _parse_arr {
 	my $orig = shift;
 	if(ref $orig eq "ARRAY") {
 		
@@ -26,8 +26,8 @@ sub _parse_arr{
 	my $where = shift // ['all'];
 	my $tags = shift // {};
 	while( my($k, $v) = each %$orig) {
-		die "invalid args checked" if($k eq '');
-		if(ref $v eq ''){
+		die "invalid args checked" unless($k =~ m/^[a-zA-Z_]+[0-9a-zA-Z_]*$/);#неподходящее название
+		if(ref $v eq '') {
 			for my $tag(@$where) {
 				$tags->{$tag}{$k} = $v;
 			}
