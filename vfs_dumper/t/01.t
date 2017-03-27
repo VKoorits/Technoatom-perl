@@ -44,7 +44,6 @@ is_deeply (
 	{},
 	"Test 2"
 );
-
 is (
 	is_died(sub { VFS::parse(read_file("$FindBin::Bin/../data/example4.bin")); }),
 	"The blob should start from 'D' or 'Z'",
