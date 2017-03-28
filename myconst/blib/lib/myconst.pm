@@ -2,7 +2,7 @@ package myconst;
 
 
 use strict;
-no warnings;
+use warnings;
 
 sub import() {
 	shift;
@@ -63,10 +63,9 @@ sub _create_export{
 	}
 
 	my $pack = caller(1);
-	no strict;
+	no strict 'refs';
 	*{$pack."::EXPORT_OK"} = \@export_ok;
 	*{$pack."::EXPORT_TAGS"} = \%export_tags;	
-	use strict;
 }
 sub _use_export_in_caller {
 	my $pack = caller(1);

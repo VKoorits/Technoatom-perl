@@ -2,14 +2,15 @@ package myconst;
 
 
 use strict;
-no warnings;
+use warnings;
 
 sub import() {
 	shift;
 	my $tags = _parse_arr(\@_);
 	_add_constant($tags);	
 	_create_export($tags);
-	_use_export_in_caller();
+	
+	#_use_export_in_caller();
 }
 
 
@@ -63,10 +64,9 @@ sub _create_export{
 	}
 
 	my $pack = caller(1);
-	no strict;
+	no strict 'refs';
 	*{$pack."::EXPORT_OK"} = \@export_ok;
 	*{$pack."::EXPORT_TAGS"} = \%export_tags;	
-	use strict;
 }
 sub _use_export_in_caller {
 	my $pack = caller(1);

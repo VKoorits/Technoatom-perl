@@ -32,7 +32,6 @@ sub parse_file {
 				".+?"\s
 				(?<status>\d+)\s
 				(?<size>\d+)\s
-				["-"\s]?
 				".+"\s
 				"(?<compress>.+)"$
 		}x;
