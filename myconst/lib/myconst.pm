@@ -9,8 +9,6 @@ sub import() {
 	my $tags = _parse_arr(\@_);
 	_add_constant($tags);	
 	_create_export($tags);
-	
-	#_use_export_in_caller();
 }
 
 
@@ -66,16 +64,9 @@ sub _create_export{
 	my $pack = caller(1);
 	no strict 'refs';
 	*{$pack."::EXPORT_OK"} = \@export_ok;
-	*{$pack."::EXPORT_TAGS"} = \%export_tags;	
+	*{$pack."::EXPORT_TAGS"} = \%export_tags;
+	*{$pack."::import"} = \&Exporter::import;	
 }
-sub _use_export_in_caller {
-	my $pack = caller(1);
-	my $this_pack = __PACKAGE__;	
-	eval "package $pack; use Exporter 'import'; package $this_pack;";
-}
-
-
-
 
 
 
