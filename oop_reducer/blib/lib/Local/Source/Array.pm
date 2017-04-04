@@ -7,14 +7,16 @@ use utf8;
 
 sub new {
 	my ($class, %param) = @_;
-	return bless \%param, $class;
+	my $self = bless {}, $class;
+	$self->{'array'} = $param{'array'};
+	$self->{'num_str'} = 0;
+	return $self;
 }
 
-my $num_str = 0;
 sub next {
 	my $self = shift;
-	if(@{ $self->{'array'} } - $num_str > 0 ) {
-		return $self->{'array'}[$num_str++];
+	if(@{ $self->{'array'} } - $self->{'num_str'} > 0 ) {
+		return $self->{'array'}[ $self->{'num_str'}++ ];
 	}
 	return undef;
 }

@@ -7,8 +7,9 @@ use utf8;
 
 sub  new {
 	my ($class, %param) = @_;
-	#TODO поверка на  допустимость строки
-	return bless \%param, $class;
+	my $self = bless {}, $class;
+	$self->{text} = $param{text};
+	return $self;
 }
 
 sub get {

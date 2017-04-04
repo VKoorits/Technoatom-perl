@@ -19,7 +19,7 @@ sub _parse_arr {
 	if(ref $orig eq "ARRAY") {
 		
 		(@$orig - 1) or die "invalid args checked"; #если передается только один параметр
-		my %hash = @$orig;
+		my %hash = (@$orig);
 		$orig = \%hash;		
 	}
 	my $where = shift // ['all'];

@@ -15,7 +15,7 @@ sub reduce_n {
 
 		my $top = $obj->get( $self->{'top'}, 0 );
 		my $bottom = $obj->get( $self->{'bottom'}, 0 );
-		$self->{'initial_value'} = $top - $bottom if( $top - $bottom > $self->{'initial_value'} );
+		$self->{'reduced'} = $top - $bottom if( $top - $bottom > $self->{'reduced'} );
 
 	}
 	return $self->reduced();
@@ -28,7 +28,7 @@ sub reduce_all {
 		
 		my $top = $obj->get( $self->{'top'}, 0 );
 		my $bottom = $obj->get( $self->{'bottom'}, 0 );
-		$self->{'initial_value'} = $top - $bottom if( $top - $bottom > $self->{'initial_value'} );
+		$self->{'reduced'} = $top - $bottom if( $top - $bottom > $self->{'reduced'} );
 	}
 	return $self->reduced();
 }

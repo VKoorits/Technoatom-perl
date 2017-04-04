@@ -38,13 +38,60 @@ sub check {
 	my $ok = eq_deeply($MM, $matrix_c);
 	print "\n==$ok\n";
 }
+check();
 
 sub mult {
-	#$SIG{CHLD} = sub {
-	#	while( my $pid = waitpid(-1, WNOHANG)){
-	#		last if $pid == -1;
-	#	}
-	#};
+	my ($mat_a, $mat_b, $max_child) = @_;
+	$SIG{CHLD} = sub {
+		while( my $pid = waitpid(-1, WNOHANG)){
+			last if $pid == -1;
+		}
+	};
+	
+	my @r;
+	my @w;
+
+
+
+	for(0..$max_child+2) {
+		pipe($r[$_], $w[$_]);
+	}
+   	defined(my $child_pid = fork()) or die "can not fork";
+    	
+    if($child_pid){
+    	for(0..$max_child-1) {
+			close($w[$_]);
+		}
+		for(0..$max_child-1) {
+			my $inf;
+			read $r[$_], $inf, 1;
+			#print "from $_ : $inf\n";
+		}
+		for(0..$max_child-1) {
+			close($r[$_]);
+		}
+    }else{
+		#делаем $max_child - 1 fork`ов
+		for(1..$max_child-1){
+
+			defined(my $child = fork()) or die "can not fork";
+			if($child){
+				next;
+			}else{
+				close($r[$_]);				
+				 $w[$_] $_;
+				close($w[$_]);
+				exit;
+			}
+    #
+    #
+    	}
+	
+	
+	}
+	 return [];
+}
+=c
     my ($mat_a, $mat_b, $max_child) = @_;
     check_size($mat_a, $mat_b);
     $max_child = @{ $mat_a->[0] } - 1 if(@{ $mat_a->[0]} - 1 < $max_child);#каждый child вычисляет целоу число строк
@@ -94,7 +141,66 @@ sub mult {
     print Dumper($res);
     return $res;
 }
+=cut
 
+
+=head
+sub mult2 {
+	$SIG{CHLD} = sub {
+		while( my $pid = waitpid(-1, WNOHANG)){
+			last if $pid == -1;
+		}
+	};
+    my ($mat_a, $mat_b, $max_child) = @_;
+    check_size($mat_a, $mat_b);
+    $max_child = @{ $mat_a->[0] } - 1 if(@{ $mat_a->[0]} - 1 < $max_child);#каждый child вычисляет целоу число строк
+    my $res = [];
+
+    for my $num_child(0..$max_child - 1){
+    	
+    	my ($r, $w);
+    	pipe($r, $w);
+    	defined(my $child_pid = fork()) or die "can not fork";
+    	
+    	if($child_pid){
+    		close($w);
+    		my $i = $num_child * @{ $mat_a->[0] } / $max_child;#child подсчитает с этой строки
+    		my $max = (1+$num_child) * @{ $mat_a->[0] } / $max_child;# по эту
+			for ($i; $i < $max; $i++) {
+				for (my $j = 0; $j < @$mat_b; $j++) {
+					my $n;
+					read($r, $n, 4);
+					$n = unpack 'L', $n;
+					#print $n." ";				
+					$res->[$i][$j] = $n;
+				}
+			}
+			close($r);
+    		waitpid($child_pid, WNOHANG);
+    	}else{
+    		close($r);
+    		my $i = $num_child * @{ $mat_a->[0] } / $max_child;
+    		my $max = (1+$num_child) * @{ $mat_a->[0] } / $max_child;
+			for ($i; $i < $max; $i++) {
+				for (my $j = 0; $j < @$mat_b; $j++) {
+					my $num = 0;
+					for (my $k = 0; $k < @$mat_a; $k++) { 
+						$num += $mat_a->[$i][$k] * $mat_b->[$k][$j];
+					}
+
+					print $w (pack 'L', $num);
+				}
+			}#end
+			close($w);
+			exit 0;
+    	}   
+    
+    }    
+    
+    print Dumper($res);
+    return $res;
+}
+=cut
 
 sub check_size {
 	my ($M1, $M2) = @_;

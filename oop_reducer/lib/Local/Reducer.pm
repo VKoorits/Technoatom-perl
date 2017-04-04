@@ -8,11 +8,14 @@ use utf8;
 my $str;
 sub  new {
 	my ($class, %param) = @_;
-	return bless \%param, $class;
-}
+	my $self = bless {}, $class;
+	$self->{$_} = $param{$_} for( qw/field row_class initial_value top bottom source/ );
+	$self->{'reduced'} = $self->{'initial_value'};
+	return $self;
+}	
 
 sub reduced {
-	return $_[0]->{'initial_value'};
+	return $_[0]->{'reduced'};
 }
 
 1;
