@@ -19,7 +19,7 @@ sub get {
 	if(ref $self->{json} eq "HASH" ) {
 		return $self->{json}{$name} // $default;
 	}
-	return 0;
+	return $default;
 }
 
 

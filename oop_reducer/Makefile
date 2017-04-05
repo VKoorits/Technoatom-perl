@@ -188,8 +188,10 @@ TO_INST_PM = lib/Local/Reducer.pm \
 	lib/Local/Reducer/MaxDiff.pm \
 	lib/Local/Reducer/Sum.pm \
 	lib/Local/Row/JSON.pm \
+	lib/Local/Row/Parent.pm \
 	lib/Local/Row/Simple.pm \
 	lib/Local/Source/Array.pm \
+	lib/Local/Source/Parent.pm \
 	lib/Local/Source/Text.pm
 
 PM_TO_BLIB = lib/Local/Reducer.pm \
@@ -200,10 +202,14 @@ PM_TO_BLIB = lib/Local/Reducer.pm \
 	blib/lib/Local/Reducer/Sum.pm \
 	lib/Local/Row/JSON.pm \
 	blib/lib/Local/Row/JSON.pm \
+	lib/Local/Row/Parent.pm \
+	blib/lib/Local/Row/Parent.pm \
 	lib/Local/Row/Simple.pm \
 	blib/lib/Local/Row/Simple.pm \
 	lib/Local/Source/Array.pm \
 	blib/lib/Local/Source/Array.pm \
+	lib/Local/Source/Parent.pm \
+	blib/lib/Local/Source/Parent.pm \
 	lib/Local/Source/Text.pm \
 	blib/lib/Local/Source/Text.pm
 
@@ -850,8 +856,10 @@ pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	  lib/Local/Reducer/MaxDiff.pm blib/lib/Local/Reducer/MaxDiff.pm \
 	  lib/Local/Reducer/Sum.pm blib/lib/Local/Reducer/Sum.pm \
 	  lib/Local/Row/JSON.pm blib/lib/Local/Row/JSON.pm \
+	  lib/Local/Row/Parent.pm blib/lib/Local/Row/Parent.pm \
 	  lib/Local/Row/Simple.pm blib/lib/Local/Row/Simple.pm \
 	  lib/Local/Source/Array.pm blib/lib/Local/Source/Array.pm \
+	  lib/Local/Source/Parent.pm blib/lib/Local/Source/Parent.pm \
 	  lib/Local/Source/Text.pm blib/lib/Local/Source/Text.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
