@@ -20,8 +20,6 @@ my @all_links;
 my $cv = AnyEvent->condvar;
 
 $|=1;
-#p run('https://github.com/Nikolo/Technosfera-perl/tree/anosov-crawler/');
-
 
 sub run {
 	my $start_url = shift;
@@ -41,8 +39,6 @@ sub run {
 	}
 	
 	
-	
-	warn Dumper(($sum, @keys[0..9]));
 	return ($sum, @keys[0..9]);
 }
 
