@@ -1,4 +1,4 @@
-# This Makefile is for the Homework::SaveSTDIN extension to perl.
+# This Makefile is for the Crawler extension to perl.
 #
 # It was generated automatically by MakeMaker version
 # 7.0401 (Revision: 70401) from the contents of
@@ -13,7 +13,7 @@
 
 #     BUILD_REQUIRES => {  }
 #     CONFIGURE_REQUIRES => {  }
-#     NAME => q[Homework::SaveSTDIN]
+#     NAME => q[Crawler]
 #     PREREQ_PM => {  }
 #     TEST_REQUIRES => {  }
 
@@ -52,8 +52,8 @@ VENDORLIBEXP = /usr/share/perl5
 AR_STATIC_ARGS = cr
 DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
-NAME = Homework::SaveSTDIN
-NAME_SYM = Homework_SaveSTDIN
+NAME = Crawler
+NAME_SYM = Crawler
 VERSION = 
 VERSION_MACRO = VERSION
 VERSION_SYM = 
@@ -144,9 +144,9 @@ MM_REVISION = 70401
 # PARENT_NAME = NAME without BASEEXT and no trailing :: (eg Foo::Bar)
 # DLBASE  = Basename part of dynamic library. May be just equal BASEEXT.
 MAKE = make
-FULLEXT = Homework/SaveSTDIN
-BASEEXT = SaveSTDIN
-PARENT_NAME = Homework
+FULLEXT = Crawler
+BASEEXT = Crawler
+PARENT_NAME = 
 DLBASE = $(BASEEXT)
 VERSION_FROM = 
 OBJECT = 
@@ -166,8 +166,8 @@ MAN3PODS =
 CONFIGDEP = $(PERL_ARCHLIBDEP)$(DFSEP)Config.pm $(PERL_INCDEP)$(DFSEP)config.h
 
 # Where to build things
-INST_LIBDIR      = $(INST_LIB)/Homework
-INST_ARCHLIBDIR  = $(INST_ARCHLIB)/Homework
+INST_LIBDIR      = $(INST_LIB)
+INST_ARCHLIBDIR  = $(INST_ARCHLIB)
 
 INST_AUTODIR     = $(INST_LIB)/auto/$(FULLEXT)
 INST_ARCHAUTODIR = $(INST_ARCHLIB)/auto/$(FULLEXT)
@@ -183,9 +183,10 @@ PERL_ARCHIVEDEP    =
 PERL_ARCHIVE_AFTER = 
 
 
-TO_INST_PM = 
+TO_INST_PM = lib/Crawler.pm
 
-PM_TO_BLIB = 
+PM_TO_BLIB = lib/Crawler.pm \
+	blib/lib/Crawler.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -254,8 +255,8 @@ CI = ci -u
 RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
-DISTNAME = Homework-SaveSTDIN
-DISTVNAME = Homework-SaveSTDIN-
+DISTNAME = Crawler
+DISTVNAME = Crawler-
 
 
 # --- MakeMaker macro section:
@@ -489,7 +490,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) 'meta-spec:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  url: http://module-build.sourceforge.net/META-spec-v1.4.html' >> META_new.yml
 	$(NOECHO) $(ECHO) '  version: '\''1.4'\''' >> META_new.yml
-	$(NOECHO) $(ECHO) 'name: Homework-SaveSTDIN' >> META_new.yml
+	$(NOECHO) $(ECHO) 'name: Crawler' >> META_new.yml
 	$(NOECHO) $(ECHO) 'no_index:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  directory:' >> META_new.yml
 	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
@@ -512,7 +513,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",' >> META_new.json
 	$(NOECHO) $(ECHO) '      "version" : "2"' >> META_new.json
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
-	$(NOECHO) $(ECHO) '   "name" : "Homework-SaveSTDIN",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "name" : "Crawler",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "no_index" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '      "directory" : [' >> META_new.json
 	$(NOECHO) $(ECHO) '         "t",' >> META_new.json
@@ -825,6 +826,8 @@ ppd :
 # --- MakeMaker pm_to_blib section:
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
+	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
+	  lib/Crawler.pm blib/lib/Crawler.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

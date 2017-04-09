@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 use_ok("Local::MatrixMultiplier");
 
 my $matrix_a = [
@@ -48,5 +48,5 @@ is(!$@, '', 'Wrong matrix');
 eval {
     Local::MatrixMultiplier::mult([[1,3],[2,4]], [[1,2],[4,5],[7,8,9]], 1);
 };
-#is(!$@, '', 'Wrong matrix');
+is(!$@, '', 'Wrong matrix');
 

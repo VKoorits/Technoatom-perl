@@ -9,25 +9,21 @@ use Data::Dumper;
 use 5.010;
 
 my $str;
-my $offset;
 
 sub get {
-	my ($len, $type) = @_;
-
+	my $len = shift;	
 	if($len == 0){ #аналог eof
-		return $offset < length($str);
-	}			
-
-	my $res = substr($str, $offset, $len);
-	$offset += $len;
+		return 0 < length($str);
+	}				
+	my $type = shift // "a$len";
 	
-	return $res unless(defined $type);
-	return unpack $type, $res;
+	
+	(my $res, $str) = unpack($type.'a*', $str);
+	return $res;
 }
 
 sub parse {
 	$str = shift;
-	$offset = 0;
 	
 	return {} if( substr($str, 0, 1) eq 'Z');
 	die "The blob should start from 'D' or 'Z'" if(substr($str, 0, 1) ne 'D');
@@ -58,7 +54,7 @@ sub parse {
 			$last_dir = $dir;
 		}elsif($comand eq "I") {
 			push @path, $last_dir;
-			$this_place = $last_dir->{'list'};	
+			$this_place = $last_dir->{'list'};
 		}elsif($comand eq "U") {
 			pop @path;
 			$this_place = @path[ @path-1]->{'list'};
