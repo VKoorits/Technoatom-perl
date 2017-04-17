@@ -1,0 +1,5 @@
+db_param:
+  driver: 'SQLite'
+  db_name: 'user.db'
+  username: ''
+  password: ''

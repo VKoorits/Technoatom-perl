@@ -20,6 +20,10 @@ my @all_links;
 my $cv = AnyEvent->condvar;
 
 $|=1;
+my($size, @links) = run('https://github.com/Nikolo/Technosfera-perl/tree/anosov-crawler/');
+print "\nsummary size: $size\n";
+print"\n============================================\n";
+p @links;
 
 sub run {
 	my $start_url = shift;
@@ -31,6 +35,7 @@ sub run {
 	
 	#обрабатываем
 	my @keys = sort{$data{$b} <=> $data{$a} }keys %data;
+	p @keys;
 	my $sum = 0;
 	my $count = 0;
 	for(values %data) {
