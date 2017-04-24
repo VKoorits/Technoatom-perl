@@ -7,6 +7,7 @@ use Analizator;
 use 5.010;
 use Data::Dumper;
 use JSON::XS;
+use DDP;
 
 my (%param ,@param_users);
 GetOptions(\%param, 'nofriends', 'friends', 'num_handshakes', 'user=i'=>\@param_users);
@@ -25,5 +26,5 @@ if(exists $param{'nofriends'}) {
 }
 
 #любые действия с полученным JSON;
-print Dumper(JSON::XS::decode_json($answer));
-
+my $ans = JSON::XS::decode_json($answer);
+p $ans;

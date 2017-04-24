@@ -6,6 +6,7 @@ use DBD::SQLite;
 use Config::YAML;
 use JSON::XS;
 use 5.010;
+use DDP;
 
 sub new {
 	my ($class, %param)  = @_;
@@ -45,16 +46,16 @@ sub friends{
 	$users_friends[$_] = _get_all_friends_id($self, $users[$_]) for(0..1);
 	
 	%hash_user_friends = map{$_ => 1} @{ $users_friends[0] };
-	my ( $counter, @common_friends_id) = 0;
-	my @answer;
-	for(@{ $users_friends[1]} ) {
-		if(exists $hash_user_friends{$_} ) {
-			++$counter;
-			my $name = $self->{'dbh'}->selectall_arrayref("SELECT name FROM user WHERE ID == ".$_);
-			push @answer,  {'name' => $name->[0]->[0], 'id' => $_};
-		}
-	}
-	return JSON::XS::encode_json( { list=>\@answer, count=>$counter} );
+	my @common_friends = grep{ exists $hash_user_friends{$_} } @{ $users_friends[1] };
+	my $stmt = 'SELECT name FROM user WHERE ID IN ('
+	.( join(', ', @common_friends) )
+	.')';
+	
+
+	my @request = $self->{'dbh'}->selectall_arrayref($stmt);
+	my @answer = map{$_->[0]->[0]} @request;
+	
+	return JSON::XS::encode_json( { list=>\@answer, count => scalar @answer} );
 }
 
 

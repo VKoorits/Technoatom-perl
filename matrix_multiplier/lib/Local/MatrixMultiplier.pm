@@ -1,12 +1,12 @@
 package Local::MatrixMultiplier;
-use Data::Dumper;
 use strict;
 use warnings;
 use POSIX ':sys_wait_h';
-use Test::Deep;
+
 
 sub mult {
-	$SIG{CHLD} = sub {
+	local $| = 1;
+	local $SIG{CHLD} = sub {
 		while( my $pid = waitpid(-1, WNOHANG)){
 			last if $pid == -1;
 			if( WIFEXITED($?) ){
@@ -18,45 +18,49 @@ sub mult {
 	
 	my ($mat_a, $mat_b, $max_child) = @_;
     check_size($mat_a, $mat_b);
-    $max_child = scalar @$mat_a if(@{ $mat_a->[0]} - 1 < $max_child);#каждый child вычисляет целоу число строк
-    my $res = [];
+    my $res;
     
-    my ($r, $w);
-    pipe($r, $w);
-	for my $num_child(0..$max_child - 1) {
-		if(my $child = fork() ) {
-		
-			if($num_child = $max_child - 2){
-				close($w);
-		  		for(1..@{$mat_b->[0]} * @$mat_a) {#родительский процесс считывает
-		   			my ($block, $index, $data);
-					read($r, $block, 8);
-					($index, $data) = unpack('L2',$block);#возможно, стоило сделать pipe для каждого процесса и не использовать index
-					my ($i, $j) = ($index / @{$mat_b->[0]}, $index % @{$mat_b->[0]});
-					$res->[$i]->[$j] = $data;		
-		
-		   		}
-		   		close($r);
-			} else {  next;  }
+    my $count_cell_res = @$mat_a * @{$mat_b->[0]};
+   	$max_child = $count_cell_res if($count_cell_res < $max_child);
+
+
+   	my(@r, @w);
+   	for(0..$max_child-1){ pipe($r[$_], $w[$_]); }
+   	
+    my $count_cell_for_pid = $count_cell_res / $max_child;
+   		
+	for my $num_child (0..$max_child-1) {
+	   	if(my $pid = fork()) {
+			if($num_child != $max_child-1){ next; }
+			
+			for(0..$max_child-1){ close $w[$_]; }
+	   		for my $index (0..$count_cell_res-1){
+				read $r[int($index/$count_cell_for_pid)], my $data, 4 ;
+				$data = unpack 'L', $data;
+				my ($i, $j) = ($index / @{$mat_b->[0]}, $index % @{$mat_b->[0]});
+				$res->[$i]->[$j] = $data;
+			
+			}
+			
+				for(0..$max_child-1){ close $w[$_]; }
 				
-		} else { #каждый дочерний процесс считает несколько строк матрицы
-		
-			close($r);
-			die "Cannot fork $!" unless(defined $child);
-			my $i = $num_child * @{ $mat_a->[0] } / $max_child;
-			my $max = (1+$num_child) * @{ $mat_a->[0] } / $max_child;
-			for ($i; $i < $max; $i++) {
-				for (my $j = 0; $j < @$mat_b; $j++) {
-					my $num = 0;
-					for (my $k = 0; $k < @$mat_a; $k++) { 
-						$num += $mat_a->[$i][$k] * $mat_b->[$k][$j];
+		}else{
+			
+			close $r[$num_child];
+			for my $index ($num_child * $count_cell_for_pid
+							..	($num_child + 1) * $count_cell_for_pid  - 1){
+					my ($i, $j) = ($index / @{$mat_b->[0]}, $index % @{$mat_b->[0]});
+		   			my $num = 0;
+					for my $k (0..@{ $mat_a->[0] }-1){
+						$num += $mat_a->[$i]->[$k]*$mat_b->[$k]->[$j];
 					}
-					print $w (pack 'L2', $i * @{$mat_b->[0]} +$j, $num);# записать индекс и значение					
-				}
-			}	
+					syswrite $w[$num_child], (pack 'L',$num);
+			}
+			close $w[$num_child];
 			exit 0;
-		} 	
+		}
 	}
+    
    	return $res;
 }
 
