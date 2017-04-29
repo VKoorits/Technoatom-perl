@@ -1,0 +1,25 @@
+<!doctype html>
+<head>
+    <title>Atom notes</title>
+</head>
+
+<html>
+<body>
+	<!-- Создание заметки -->
+    <div class="b-note-creation b-block">
+      <center>
+        <h2>Create note</h2>
+        <form action="">
+            <p><input type="title" name="title" placeholder="Title" /></p>
+            <p><textarea name="text">Note text</textarea></p>
+            <p>Enter the usenames with a space</p>
+            <p><textarea name="users">users</textarea></p>
+            <p><input type="submit" value="Create" /></p>
+            <br><a href="list">all note</a>
+        </form>
+      </center>
+    </div>
+
+
+</body>
+</html>

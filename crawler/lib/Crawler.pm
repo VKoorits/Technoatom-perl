@@ -63,7 +63,7 @@ sub geter{
 		links_handler($url);		
 
 		FUNCTION_EXIT:
-		#print $count_links.'->';
+		print $count_links.'->';
 		unless($count_links) {
 			$count_links = 1;
 			$cv->send;

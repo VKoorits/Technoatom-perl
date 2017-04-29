@@ -1,0 +1,33 @@
+<!doctype html>
+<head>
+    <title>Atom notes</title>
+</head>
+
+<html>
+<body>
+
+    <!-- Авторизация -->
+    <div>
+      <center>
+      	<h1> Notes</h1>
+           	<table border="1">
+            		<tr>
+				   		<td><b>Writer</b></td>
+				   		<td><b>Title</b></td>
+				   		<td><b>Text</b></td>
+				   </tr>
+				   <% FOREACH note IN notes %>
+						<tr>
+					   		<td><% note.name %></td>
+					   		<td><% note.title %></td>
+					   		<td><% note.text %></td>
+					   </tr>
+					<% END %>
+			</table>
+			<a href="index">new note</a>
+      </center>
+    </div>
+
+
+</body>
+</html>
