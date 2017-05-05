@@ -1,9 +1,12 @@
-package Stickers;
-use Dancer;
+package Notes;
+use Dancer2::Plugin::CSRF;
+use Dancer2;
 use DBI;
 use DBD::SQLite;
 use 5.010;
 use YAML::Tiny;
+
+
 
 sub connect_db {
 	state $dbh;
@@ -24,11 +27,23 @@ sub connect_db {
 	
 #$dbh = DBI->connect("DBI:SQLite:dbname=user.db", "", "", { RaiseError => 1 }) or die "can not connect: ".$DBI::errstr;
 	return $dbh;
-}	
+}
+
+
+	
 
 hook 'before' => sub {
 		set session => 'simple';
-		if (request->path_info !~ m{^/login} && !session('user_id')) {
+		if ( request->is_post() ) {
+			my $csrf_token = param('csrf_token');
+			print "<<<$csrf_token>>>";
+			if ( !$csrf_token || !validate_csrf_token($csrf_token) ) {
+				redirect '/CSRF';
+			}
+		}
+
+		if (request->path_info !~ m{^/login} &&
+			request->path_info !~ m{^/CSRF} && !session('user_id')) {
 		    redirect '/login';
 		}
     };
@@ -55,7 +70,7 @@ any '/index' => sub {
 		$dbh->do($stmt);
 		redirect '/list'; 
 	} else {
-		template 'index';
+		template 'index', { csrf_token => get_csrf_token() };
 	}
    
 };
@@ -72,10 +87,10 @@ any '/list' => sub {
 				.(join ', ', @notes_id)
 				.")"
 			, {Slice => {}}) };
-	template 'list', {notes => \@notes};
+	template 'list', {notes => \@notes, csrf_token => get_csrf_token()};
 };
 
-any '/login' => sub {
+post '/login' => sub {
    my $user = params->{username};
    my $password = params->{password};
    if(defined $user && defined $password) {
@@ -93,9 +108,11 @@ any '/login' => sub {
 		}		
 		session user_id => $answer->[0];
 		redirect '/index';
-	}else{
-		template '/login';
 	}
 }; 
+get '/login' => sub { template 'login', { csrf_token => get_csrf_token() } };
 
-1;
+any ['head', 'get'] => CSRF => sub{ template 'CSRF', { csrf_token => get_csrf_token() } };
+
+start;
+true;

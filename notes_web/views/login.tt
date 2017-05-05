@@ -10,7 +10,7 @@
     <div class="b-auth b-block">
       <center>
         <h2>Auth</h2>
-        <form action="">
+        <form action="" method="post">
             <p><input type="text" name="username" placeholder="username" /></p>
             <p><input type="password" name="password" placeholder="password" /></p>
             <p><input type="submit" value="Login" /></p>
