@@ -1,12 +1,10 @@
-package Notes;
-use Dancer2::Plugin::CSRF;
 use Dancer2;
+use Dancer2::Plugin::CSRF;
 use DBI;
 use DBD::SQLite;
 use 5.010;
 use YAML::Tiny;
-
-
+use Data::Dumper;
 
 sub connect_db {
 	state $dbh;
@@ -27,27 +25,35 @@ sub connect_db {
 	
 #$dbh = DBI->connect("DBI:SQLite:dbname=user.db", "", "", { RaiseError => 1 }) or die "can not connect: ".$DBI::errstr;
 	return $dbh;
-}
-
-
-	
+}	
 
 hook 'before' => sub {
 		set session => 'simple';
+		#my $csrf_token = param('csrf_token');
+		#print "\n\n", request->path_info, "\t";
+		#if(validate_csrf_token($csrf_token) ) { print "\tnorm token"}else{print "\tbad token";}
+		#print "\n\n";
+		
+		print "\n".request->path_info."\n";
 		if ( request->is_post() ) {
-			my $csrf_token = param('csrf_token');
-			print "<<<$csrf_token>>>";
-			if ( !$csrf_token || !validate_csrf_token($csrf_token) ) {
-				redirect '/CSRF';
-			}
+			print "\n".request->path_info."\n";
+		}
+		if (request->path_info !~ m{^/login} &&
+			request->path_info !~ m{^/CSRF} &&
+		 	!session('user_id')) {
+		    			redirect 'login';
+		}
+		if ( request->is_post() ) {
+		#	my $csrf_token = params->{'csrf_token'};
+		#	if($csrf_token){print "$csrf_token\n";} else { print "\nundef\n"; }
+		#	if ( !$csrf_token || !validate_csrf_token($csrf_token) ) {
+		#		redirect '/CSRF', { csrf_token => params->{csrf_token} };
+		#	}
 		}
 
-		if (request->path_info !~ m{^/login} &&
-			request->path_info !~ m{^/CSRF} && !session('user_id')) {
-		    redirect '/login';
-		}
+		
     };
-any '/index' => sub {
+any 'index' => sub {
 	my $title = params->{title};
 	my $text = params->{text};
 	if(defined $title && defined $text ) {
@@ -68,12 +74,13 @@ any '/index' => sub {
 		$stmt .= ")";
 		
 		$dbh->do($stmt);
-		redirect '/list'; 
+		redirect 'list'; 
 	} else {
-		template 'index', { csrf_token => get_csrf_token() };
+		template 'index';
 	}
    
 };
+get '/CSRF' => sub { template 'CSRF'; };
 
 any '/list' => sub {
 	my $dbh = connect_db();
@@ -87,7 +94,7 @@ any '/list' => sub {
 				.(join ', ', @notes_id)
 				.")"
 			, {Slice => {}}) };
-	template 'list', {notes => \@notes, csrf_token => get_csrf_token()};
+	template 'list';
 };
 
 post '/login' => sub {
@@ -107,12 +114,11 @@ post '/login' => sub {
 			$answer = $dbh->selectall_arrayref("SELECT max(ID) FROM user")->[0];	
 		}		
 		session user_id => $answer->[0];
-		redirect '/index';
+		redirect 'index';
+	}else{
+		template 'login';
 	}
-}; 
-get '/login' => sub { template 'login', { csrf_token => get_csrf_token() } };
-
-any ['head', 'get'] => CSRF => sub{ template 'CSRF', { csrf_token => get_csrf_token() } };
-
+};
+any ["get", "head"] => '/login' => sub { template 'login'};
 start;
-true;
+1;

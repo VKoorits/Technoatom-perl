@@ -8,12 +8,12 @@ use URI::URL;
 use HTML::LinkExtor;
 use URI::URL;
 use AnyEvent::HTTP;
-use DDP;
 
 
 sub run{
-	my @queue = (shift);
-	my $max_parallel = shift;
+	my $base_url = shift;
+	my @queue = ($base_url);
+	my $max_parallel = shift // 10;
 	my %seen;
 	
 	
@@ -41,7 +41,7 @@ sub run{
 										my $link  = URI->new($attr{'href'})->abs($url)->as_string;
 										$link = [split('#', $link)]->[0]; #отрезаем теги приивязки
 									
-										unless(defined $seen{$link} || $link !~ m/^$url/) {			
+										if(!exists $seen{$link} && $link =~ m/^\Q$base_url\E/){
 											push(@queue, $link);
 										}
 									}
@@ -50,7 +50,6 @@ sub run{
 							
 							
 							$work->() while @queue && $cv->{_ae_counter} < $max_parallel;
-
 							$cv->end();
 						}
 						
