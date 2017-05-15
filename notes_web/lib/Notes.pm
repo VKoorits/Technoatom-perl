@@ -29,31 +29,23 @@ sub connect_db {
 
 hook 'before' => sub {
 		set session => 'simple';
-		#my $csrf_token = param('csrf_token');
-		#print "\n\n", request->path_info, "\t";
-		#if(validate_csrf_token($csrf_token) ) { print "\tnorm token"}else{print "\tbad token";}
-		#print "\n\n";
-		
-		print "\n".request->path_info."\n";
-		if ( request->is_post() ) {
-			print "\n".request->path_info."\n";
-		}
+
 		if (request->path_info !~ m{^/login} &&
 			request->path_info !~ m{^/CSRF} &&
 		 	!session('user_id')) {
 		    			redirect 'login';
 		}
 		if ( request->is_post() ) {
-		#	my $csrf_token = params->{'csrf_token'};
-		#	if($csrf_token){print "$csrf_token\n";} else { print "\nundef\n"; }
-		#	if ( !$csrf_token || !validate_csrf_token($csrf_token) ) {
-		#		redirect '/CSRF', { csrf_token => params->{csrf_token} };
-		#	}
+			my $csrf_token = params->{'csrf_token'};
+			print Dumper(params);
+			if ( !$csrf_token || !validate_csrf_token($csrf_token) ) {
+				redirect '/CSRF';
+			}
 		}
 
 		
     };
-any 'index' => sub {
+post 'index' => sub {
 	my $title = params->{title};
 	my $text = params->{text};
 	if(defined $title && defined $text ) {
@@ -80,6 +72,8 @@ any 'index' => sub {
 	}
    
 };
+any ["get", "head"] => '/index' => sub { template 'index', { csrf_token => get_csrf_token() } };
+
 get '/CSRF' => sub { template 'CSRF'; };
 
 any '/list' => sub {
@@ -94,7 +88,7 @@ any '/list' => sub {
 				.(join ', ', @notes_id)
 				.")"
 			, {Slice => {}}) };
-	template 'list';
+	template 'list', { notes => \@notes};
 };
 
 post '/login' => sub {
@@ -119,6 +113,6 @@ post '/login' => sub {
 		template 'login';
 	}
 };
-any ["get", "head"] => '/login' => sub { template 'login'};
+any ["get", "head"] => '/login' => sub { template 'login', { csrf_token => get_csrf_token() } };
 start;
 1;

@@ -9,14 +9,15 @@
     <div class="b-note-creation b-block">
       <center>
         <h2>Create note</h2>
-        <form action="">
+        <form action="" method="post">
             <p><input type="title" name="title" placeholder="Title" /></p>
             <p><textarea name="text">Note text</textarea></p>
             <p>Enter the usenames with a space</p>
             <p><textarea name="users">users</textarea></p>
             <p><input type="submit" value="Create" /></p>
-            <br><a href="list">all note</a>
+            	<input type="hidden" name="csrf_token" placeholder="csrftoken"  value="<% csrf_token %>"/>
         </form>
+       <br><a href="list">all note</a>
       </center>
     </div>
 
