@@ -23,7 +23,6 @@ sub connect_db {
 	$dbh = DBI->connect($dbd, $username, $password, { RaiseError => 1 })
 		                  or die "can not connect: ".$DBI::errstr;
 	
-#$dbh = DBI->connect("DBI:SQLite:dbname=user.db", "", "", { RaiseError => 1 }) or die "can not connect: ".$DBI::errstr;
 	return $dbh;
 }	
 
@@ -37,7 +36,6 @@ hook 'before' => sub {
 		}
 		if ( request->is_post() ) {
 			my $csrf_token = params->{'csrf_token'};
-			print Dumper(params);
 			if ( !$csrf_token || !validate_csrf_token($csrf_token) ) {
 				redirect '/CSRF';
 			}
@@ -53,7 +51,7 @@ post 'index' => sub {
 
 		my $sth = $dbh->prepare("INSERT INTO notes (user_id, title, text) VALUES (?,?,?)");
 		$sth->execute(session('user_id'), $title, $text);
-		my $note_id = $dbh->selectall_arrayref("SELECT max(ID) FROM notes")->[0]->[0];
+		my $note_id = $dbh->last_insert_id( undef, undef, undef, undef );
 		
 		my %nicknames = map{ $dbh->quote($_) => 1}  split ' ', params->{users}//'';
 		my %for_who_id = map{$_->[0] => 1 } @{ $dbh->selectall_arrayref(
@@ -105,7 +103,7 @@ post '/login' => sub {
 		if( not defined $answer) {  #registration
 			my $sth = $dbh->prepare("INSERT INTO user (name, password) VALUES(?, ?)");
 			$sth->execute($user, crypt($password, $user));
-			$answer = $dbh->selectall_arrayref("SELECT max(ID) FROM user")->[0];	
+			$answer = [ $dbh->last_insert_id( undef, undef, undef, undef ) ];	
 		}		
 		session user_id => $answer->[0];
 		redirect 'index';
